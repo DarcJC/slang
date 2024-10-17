@@ -85,7 +85,7 @@ auto_option(
     "Enable Aftermath in GFX, and add aftermath crash example to project"
 )
 advanced_option(SLANG_ENABLE_DX_ON_VK "Use dxvk and vkd3d-proton for DirectX support" OFF)
-advanced_option(SLANG_ENABLE_SLANG_RHI "Use slang-rhi as dependency" ON)
+advanced_option(SLANG_ENABLE_SLANG_RHI "Use slang-rhi as dependency" OFF)
 
 option(SLANG_EMBED_STDLIB_SOURCE "Embed stdlib source in the binary" ON)
 option(SLANG_EMBED_STDLIB "Build slang with an embedded version of the stdlib")
@@ -94,21 +94,21 @@ option(SLANG_ENABLE_FULL_IR_VALIDATION "Enable full IR validation (SLOW!)")
 option(SLANG_ENABLE_IR_BREAK_ALLOC, "Enable _debugUID on IR allocation")
 option(SLANG_ENABLE_ASAN "Enable ASAN (address sanitizer)")
 
-option(SLANG_ENABLE_PREBUILT_BINARIES "Enable using prebuilt binaries" ON)
-option(SLANG_ENABLE_GFX "Enable gfx targets" ON)
-option(SLANG_ENABLE_SLANGD "Enable language server target" ON)
+option(SLANG_ENABLE_PREBUILT_BINARIES "Enable using prebuilt binaries" OFF)
+option(SLANG_ENABLE_GFX "Enable gfx targets" OFF)
+option(SLANG_ENABLE_SLANGD "Enable language server target" OFF)
 option(SLANG_ENABLE_SLANGC "Enable standalone compiler target" ON)
 option(SLANG_ENABLE_SLANGRT "Enable runtime target" ON)
 option(SLANG_ENABLE_SLANG_GLSLANG "Enable glslang dependency and slang-glslang wrapper target" ON)
-option(SLANG_ENABLE_TESTS "Enable test targets, some tests may require SLANG_ENABLE_GFX, SLANG_ENABLE_SLANGD or SLANG_ENABLE_SLANGRT" ON)
-option(SLANG_ENABLE_EXAMPLES "Enable example targets, requires SLANG_ENABLE_GFX" ON)
-option(SLANG_ENABLE_REPLAYER "Enable slang-replay tool" ON)
+option(SLANG_ENABLE_TESTS "Enable test targets, some tests may require SLANG_ENABLE_GFX, SLANG_ENABLE_SLANGD or SLANG_ENABLE_SLANGRT" OFF)
+option(SLANG_ENABLE_EXAMPLES "Enable example targets, requires SLANG_ENABLE_GFX" OFF)
+option(SLANG_ENABLE_REPLAYER "Enable slang-replay tool" OFF)
 
 option(SLANG_GITHUB_TOKEN "Use a given token value for accessing Github REST API" "")
 
 advanced_option(SLANG_USE_SYSTEM_MINIZ "Build using system Miniz library" OFF)
 advanced_option(SLANG_USE_SYSTEM_LZ4 "Build using system LZ4 library" OFF)
-advanced_option(SLANG_USE_SYSTEM_VULKAN_HEADERS "Build using system Vulkan headers" OFF)
+advanced_option(SLANG_USE_SYSTEM_VULKAN_HEADERS "Build using system Vulkan headers" ON)
 advanced_option(SLANG_USE_SYSTEM_SPIRV_HEADERS "Build using system SPIR-V headers" OFF)
 advanced_option(SLANG_USE_SYSTEM_UNORDERED_DENSE "Build using system unordered dense" OFF)
 
@@ -148,7 +148,7 @@ set(SLANG_GENERATORS_PATH
 enum_option(
     SLANG_SLANG_LLVM_FLAVOR
     # Default
-    FETCH_BINARY
+    USE_SYSTEM_LLVM
     "How to get or build slang-llvm:"
     # Options
     FETCH_BINARY
