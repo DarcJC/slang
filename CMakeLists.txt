@@ -148,7 +148,7 @@ set(SLANG_GENERATORS_PATH
 enum_option(
     SLANG_SLANG_LLVM_FLAVOR
     # Default
-    USE_SYSTEM_LLVM
+    DISABLE
     "How to get or build slang-llvm:"
     # Options
     FETCH_BINARY
