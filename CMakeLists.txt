@@ -249,7 +249,8 @@ endif()
 add_subdirectory(external)
 
 set(SLANG_CORE_LIBRARIES "")
-list(APPEND SLANG_CORE_LIBRARIES miniz lz4_static Threads::Threads ${CMAKE_DL_LIBS})
+list(APPEND SLANG_CORE_LIBRARIES miniz 
+    lz4_shared Threads::Threads ${CMAKE_DL_LIBS})   # lz4_static 
 
 #
 # Our targets

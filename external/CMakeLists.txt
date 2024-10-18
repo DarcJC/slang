@@ -42,11 +42,14 @@ endif()
 
 # LZ4
 if (NOT ${SLANG_USE_SYSTEM_LZ4})
-    set(LZ4_BUNDLED_MODE ON)
+    # set(LZ4_BUNDLED_MODE ON)
+    set(LZ4_BUNDLED_MODE OFF)
+    set(BUILD_SHARED_LIBS ON)
     add_subdirectory(lz4/build/cmake EXCLUDE_FROM_ALL ${system})
     if(MSVC)
 		target_compile_options(
-		    lz4_static
+		    # lz4_static
+		    lz4_shared
 		    PRIVATE /wd5045 /wd4820 /wd4711 /wd6385 /wd6262
 		)
     endif()
