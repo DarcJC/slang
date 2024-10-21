@@ -56,9 +56,9 @@ if (NOT ${SLANG_USE_SYSTEM_LZ4})
 endif()
 
 # Vulkan headers
-if (NOT ${SLANG_USE_SYSTEM_VULKAN_HEADERS})
-    add_subdirectory(vulkan EXCLUDE_FROM_ALL ${system})
-endif()
+# if (NOT ${SLANG_USE_SYSTEM_VULKAN_HEADERS})
+#     add_subdirectory(vulkan EXCLUDE_FROM_ALL ${system})
+# endif()
 
 # metal-cpp headers
 add_library(metal-cpp INTERFACE)
@@ -69,20 +69,20 @@ if (NOT ${SLANG_USE_SYSTEM_SPIRV_HEADERS})
     add_subdirectory(spirv-headers EXCLUDE_FROM_ALL ${system})
 endif()
 
-if(SLANG_ENABLE_SLANG_GLSLANG)
-    # SPIRV-Tools
-    set(SPIRV_TOOLS_BUILD_STATIC ON)
-    set(SPIRV_WERROR OFF)
-    set(SPIRV_HEADER_DIR "${CMAKE_CURRENT_LIST_DIR}/spirv-headers/")
-    set(SPIRV_SKIP_TESTS ON)
-    add_subdirectory(spirv-tools EXCLUDE_FROM_ALL ${system})
+# if(SLANG_ENABLE_SLANG_GLSLANG)
+#     # SPIRV-Tools
+#     set(SPIRV_TOOLS_BUILD_STATIC ON)
+#     set(SPIRV_WERROR OFF)
+#     set(SPIRV_HEADER_DIR "${CMAKE_CURRENT_LIST_DIR}/spirv-headers/")
+#     set(SPIRV_SKIP_TESTS ON)
+#     add_subdirectory(spirv-tools EXCLUDE_FROM_ALL ${system})
 
-    # glslang
-    set(SKIP_GLSLANG_INSTALL ON)
-    set(ENABLE_OPT ON)
-    set(ENABLE_PCH OFF)
-    add_subdirectory(glslang EXCLUDE_FROM_ALL ${system})
-endif()
+#     # glslang
+#     set(SKIP_GLSLANG_INSTALL ON)
+#     set(ENABLE_OPT ON)
+#     set(ENABLE_PCH OFF)
+#     add_subdirectory(glslang EXCLUDE_FROM_ALL ${system})
+# endif()
 
 # imgui
 #add_library(imgui INTERFACE)

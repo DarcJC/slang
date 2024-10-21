@@ -99,7 +99,7 @@ option(SLANG_ENABLE_GFX "Enable gfx targets" OFF)
 option(SLANG_ENABLE_SLANGD "Enable language server target" OFF)
 option(SLANG_ENABLE_SLANGC "Enable standalone compiler target" ON)
 option(SLANG_ENABLE_SLANGRT "Enable runtime target" ON)
-option(SLANG_ENABLE_SLANG_GLSLANG "Enable glslang dependency and slang-glslang wrapper target" ON)
+option(SLANG_ENABLE_SLANG_GLSLANG "Enable glslang dependency and slang-glslang wrapper target" OFF)
 option(SLANG_ENABLE_TESTS "Enable test targets, some tests may require SLANG_ENABLE_GFX, SLANG_ENABLE_SLANGD or SLANG_ENABLE_SLANGRT" OFF)
 option(SLANG_ENABLE_EXAMPLES "Enable example targets, requires SLANG_ENABLE_GFX" OFF)
 option(SLANG_ENABLE_REPLAYER "Enable slang-replay tool" OFF)
@@ -435,9 +435,9 @@ endif()
 
 # webgpu_dawn is only available as a fetched shared library, since Dawn's nested source
 # trees are too large and onerous for us to depend on.
-if(SLANG_WEBGPU_DAWN_BINARY_URL)
-  copy_fetched_shared_library("webgpu_dawn" "${SLANG_WEBGPU_DAWN_BINARY_URL}")
-endif()
+# if(SLANG_WEBGPU_DAWN_BINARY_URL)
+#   copy_fetched_shared_library("webgpu_dawn" "${SLANG_WEBGPU_DAWN_BINARY_URL}")
+# endif()
 
 # slang-tint is only available as a fetched shared library, since it's hosted in the Dawn
 # repository, and Dawn's nested source trees are too large and onerous for us to depend
@@ -500,343 +500,343 @@ if(SLANG_ENABLE_PREBUILT_BINARIES)
     endif()
 endif()
 
-if(SLANG_ENABLE_GFX)
-    #
-    # `platform` contains all the platform abstractions for a GUI application.
-    #
-    slang_add_target(
-        tools/platform
-        SHARED
-        EXCLUDE_FROM_ALL
-        USE_FEWER_WARNINGS
-        LINK_WITH_PRIVATE
-            core
-            imgui
-            $<$<BOOL:${SLANG_ENABLE_XLIB}>:X11::X11>
-            "$<$<PLATFORM_ID:Darwin>:-framework Cocoa>"
-            "$<$<PLATFORM_ID:Darwin>:-framework QuartzCore>"
-            ${CMAKE_DL_LIBS}
-        LINK_WITH_FRAMEWORK
-            Foundation
-            Cocoa
-            QuartzCore
-        EXTRA_COMPILE_DEFINITIONS_PRIVATE
-            $<$<BOOL:${SLANG_ENABLE_XLIB}>:SLANG_ENABLE_XLIB=1>
-        INCLUDE_FROM_PRIVATE gfx
-        INCLUDE_DIRECTORIES_PUBLIC tools/platform
-        EXPORT_MACRO_PREFIX SLANG_PLATFORM
-    )
+# if(SLANG_ENABLE_GFX)
+#     #
+#     # `platform` contains all the platform abstractions for a GUI application.
+#     #
+#     slang_add_target(
+#         tools/platform
+#         SHARED
+#         EXCLUDE_FROM_ALL
+#         USE_FEWER_WARNINGS
+#         LINK_WITH_PRIVATE
+#             core
+#             imgui
+#             $<$<BOOL:${SLANG_ENABLE_XLIB}>:X11::X11>
+#             "$<$<PLATFORM_ID:Darwin>:-framework Cocoa>"
+#             "$<$<PLATFORM_ID:Darwin>:-framework QuartzCore>"
+#             ${CMAKE_DL_LIBS}
+#         LINK_WITH_FRAMEWORK
+#             Foundation
+#             Cocoa
+#             QuartzCore
+#         EXTRA_COMPILE_DEFINITIONS_PRIVATE
+#             $<$<BOOL:${SLANG_ENABLE_XLIB}>:SLANG_ENABLE_XLIB=1>
+#         INCLUDE_FROM_PRIVATE gfx
+#         INCLUDE_DIRECTORIES_PUBLIC tools/platform
+#         EXPORT_MACRO_PREFIX SLANG_PLATFORM
+#     )
 
-    #
-    # GFX
-    #
-    slang_add_target(
-        tools/gfx
-        SHARED
-        USE_FEWER_WARNINGS
-        LINK_WITH_PRIVATE
-            core
-            slang
-            Vulkan-Headers
-            metal-cpp
-            $<$<BOOL:${SLANG_ENABLE_XLIB}>:X11::X11>
-            $<$<BOOL:${SLANG_ENABLE_CUDA}>:CUDA::cuda_driver>
-        LINK_WITH_FRAMEWORK
-            Foundation
-            Cocoa
-            QuartzCore
-            Metal
-        EXTRA_COMPILE_DEFINITIONS_PRIVATE
-            $<$<BOOL:${SLANG_ENABLE_CUDA}>:GFX_ENABLE_CUDA>
-            $<$<BOOL:${SLANG_ENABLE_OPTIX}>:GFX_OPTIX>
-            $<$<BOOL:${SLANG_ENABLE_NVAPI}>:GFX_NVAPI>
-            $<$<BOOL:${SLANG_ENABLE_XLIB}>:SLANG_ENABLE_XLIB>
-        # This is a shared library, so we need to set a preprocessor macro to mark
-        # exported symbols
-        EXPORT_MACRO_PREFIX SLANG_GFX
-        # slang-gfx is in this directory, anything which depends on gfx should include
-        # this
-        INCLUDE_DIRECTORIES_PUBLIC . include
-        REQUIRES copy-gfx-slang-modules
-        INSTALL
-        FOLDER gfx
-    )
-    set(modules_dest_dir $<TARGET_FILE_DIR:slang-test>)
-    add_custom_target(
-        copy-gfx-slang-modules
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${modules_dest_dir}
-        COMMAND
-            ${CMAKE_COMMAND} -E copy tools/gfx/gfx.slang
-            ${modules_dest_dir}/gfx.slang
-        COMMAND
-            ${CMAKE_COMMAND} -E copy tools/gfx/slang.slang
-            ${modules_dest_dir}/slang.slang
-        WORKING_DIRECTORY ${slang_SOURCE_DIR}
-        VERBATIM
-    )
-    set_target_properties(copy-gfx-slang-modules PROPERTIES FOLDER generators)
-    install(
-        FILES ${modules_dest_dir}/gfx.slang ${modules_dest_dir}/slang.slang
-        DESTINATION ${runtime_subdir}
-    )
+#     #
+#     # GFX
+#     #
+#     slang_add_target(
+#         tools/gfx
+#         SHARED
+#         USE_FEWER_WARNINGS
+#         LINK_WITH_PRIVATE
+#             core
+#             slang
+#             Vulkan-Headers
+#             metal-cpp
+#             $<$<BOOL:${SLANG_ENABLE_XLIB}>:X11::X11>
+#             $<$<BOOL:${SLANG_ENABLE_CUDA}>:CUDA::cuda_driver>
+#         LINK_WITH_FRAMEWORK
+#             Foundation
+#             Cocoa
+#             QuartzCore
+#             Metal
+#         EXTRA_COMPILE_DEFINITIONS_PRIVATE
+#             $<$<BOOL:${SLANG_ENABLE_CUDA}>:GFX_ENABLE_CUDA>
+#             $<$<BOOL:${SLANG_ENABLE_OPTIX}>:GFX_OPTIX>
+#             $<$<BOOL:${SLANG_ENABLE_NVAPI}>:GFX_NVAPI>
+#             $<$<BOOL:${SLANG_ENABLE_XLIB}>:SLANG_ENABLE_XLIB>
+#         # This is a shared library, so we need to set a preprocessor macro to mark
+#         # exported symbols
+#         EXPORT_MACRO_PREFIX SLANG_GFX
+#         # slang-gfx is in this directory, anything which depends on gfx should include
+#         # this
+#         INCLUDE_DIRECTORIES_PUBLIC . include
+#         REQUIRES copy-gfx-slang-modules
+#         INSTALL
+#         FOLDER gfx
+#     )
+#     set(modules_dest_dir $<TARGET_FILE_DIR:slang-test>)
+#     add_custom_target(
+#         copy-gfx-slang-modules
+#         COMMAND ${CMAKE_COMMAND} -E make_directory ${modules_dest_dir}
+#         COMMAND
+#             ${CMAKE_COMMAND} -E copy tools/gfx/gfx.slang
+#             ${modules_dest_dir}/gfx.slang
+#         COMMAND
+#             ${CMAKE_COMMAND} -E copy tools/gfx/slang.slang
+#             ${modules_dest_dir}/slang.slang
+#         WORKING_DIRECTORY ${slang_SOURCE_DIR}
+#         VERBATIM
+#     )
+#     set_target_properties(copy-gfx-slang-modules PROPERTIES FOLDER generators)
+#     install(
+#         FILES ${modules_dest_dir}/gfx.slang ${modules_dest_dir}/slang.slang
+#         DESTINATION ${runtime_subdir}
+#     )
 
-    slang_add_target(
-        tools/gfx-util
-        STATIC
-        LINK_WITH_PRIVATE core
-        INCLUDE_FROM_PRIVATE gfx
-        # The headers are included with 'include "gfx-util/blah.h"' which is found
-        # in the tools directory
-        INCLUDE_DIRECTORIES_PUBLIC tools
-        FOLDER gfx
-    )
-endif()
+#     slang_add_target(
+#         tools/gfx-util
+#         STATIC
+#         LINK_WITH_PRIVATE core
+#         INCLUDE_FROM_PRIVATE gfx
+#         # The headers are included with 'include "gfx-util/blah.h"' which is found
+#         # in the tools directory
+#         INCLUDE_DIRECTORIES_PUBLIC tools
+#         FOLDER gfx
+#     )
+# endif()
 
 #
 # The test executables and runtime-loaded modules
 #
-if(SLANG_ENABLE_TESTS)
-    slang_add_target(
-        tools/test-server
-        EXECUTABLE
-        EXCLUDE_FROM_ALL
-        LINK_WITH_PRIVATE core compiler-core slang
-        FOLDER test
-    )
-    slang_add_target(
-        tools/test-process
-        EXECUTABLE
-        EXCLUDE_FROM_ALL
-        LINK_WITH_PRIVATE core compiler-core
-        FOLDER test
-    )
+# if(SLANG_ENABLE_TESTS)
+#     slang_add_target(
+#         tools/test-server
+#         EXECUTABLE
+#         EXCLUDE_FROM_ALL
+#         LINK_WITH_PRIVATE core compiler-core slang
+#         FOLDER test
+#     )
+#     slang_add_target(
+#         tools/test-process
+#         EXECUTABLE
+#         EXCLUDE_FROM_ALL
+#         LINK_WITH_PRIVATE core compiler-core
+#         FOLDER test
+#     )
 
-    slang_add_target(
-        tools/slang-test
-        EXECUTABLE
-        USE_FEWER_WARNINGS
-        LINK_WITH_PRIVATE core compiler-core slang ${CMAKE_DL_LIBS} Threads::Threads
-        REQUIRES
-            # Shared libraries dlopened by slang-test
-            slang-reflection-test
-            slang-unit-test
-            # Used by some tests when they run
-            slangd
-            test-server
-            test-process
-        OPTIONAL_REQUIRES
-            gfx
-            slang-rt
-            slang-glslang
-            slang-llvm
-            copy-webgpu_dawn
-            copy-slang-tint
-        FOLDER test
-        DEBUG_DIR ${slang_SOURCE_DIR}
-    )
-    set_property(
-        DIRECTORY ${slang_SOURCE_DIR}
-        PROPERTY VS_STARTUP_PROJECT slang-test
-    )
+#     slang_add_target(
+#         tools/slang-test
+#         EXECUTABLE
+#         USE_FEWER_WARNINGS
+#         LINK_WITH_PRIVATE core compiler-core slang ${CMAKE_DL_LIBS} Threads::Threads
+#         REQUIRES
+#             # Shared libraries dlopened by slang-test
+#             slang-reflection-test
+#             slang-unit-test
+#             # Used by some tests when they run
+#             slangd
+#             test-server
+#             test-process
+#         OPTIONAL_REQUIRES
+#             gfx
+#             slang-rt
+#             slang-glslang
+#             slang-llvm
+#             copy-webgpu_dawn
+#             copy-slang-tint
+#         FOLDER test
+#         DEBUG_DIR ${slang_SOURCE_DIR}
+#     )
+#     set_property(
+#         DIRECTORY ${slang_SOURCE_DIR}
+#         PROPERTY VS_STARTUP_PROJECT slang-test
+#     )
 
-    slang_add_target(
-        tools/unit-test
-        OBJECT
-        EXCLUDE_FROM_ALL
-        INCLUDE_FROM_PRIVATE slang core
-        INCLUDE_DIRECTORIES_PRIVATE include
-        FOLDER test
-    )
+#     slang_add_target(
+#         tools/unit-test
+#         OBJECT
+#         EXCLUDE_FROM_ALL
+#         INCLUDE_FROM_PRIVATE slang core
+#         INCLUDE_DIRECTORIES_PRIVATE include
+#         FOLDER test
+#     )
 
-    # These are libraries loaded at runtime from the test executable:
-    if(SLANG_ENABLE_GFX)
-        slang_add_target(
-            tools/gfx-unit-test
-            MODULE
-            EXCLUDE_FROM_ALL
-            EXTRA_COMPILE_DEFINITIONS_PRIVATE SLANG_SHARED_LIBRARY_TOOL
-            USE_FEWER_WARNINGS
-            LINK_WITH_PRIVATE core slang unit-test gfx gfx-util platform
-            OUTPUT_NAME gfx-unit-test-tool
-            REQUIRED_BY slang-test
-            FOLDER test/tools
-        )
-        if(SLANG_ENABLE_SLANG_RHI)
-            slang_add_target(
-                tools/render-test
-                MODULE
-                EXCLUDE_FROM_ALL
-                EXTRA_COMPILE_DEFINITIONS_PRIVATE SLANG_SHARED_LIBRARY_TOOL
-                USE_FEWER_WARNINGS
-                LINK_WITH_PRIVATE
-                    core
-                    compiler-core
-                    slang
-                    slang-rhi
-                    platform
-                    $<$<BOOL:${SLANG_ENABLE_CUDA}>:CUDA::cuda_driver>
-                EXTRA_COMPILE_DEFINITIONS_PRIVATE
-                    $<$<BOOL:${SLANG_ENABLE_CUDA}>:RENDER_TEST_CUDA>
-                    $<$<BOOL:${SLANG_ENABLE_OPTIX}>:RENDER_TEST_OPTIX>
-                OUTPUT_NAME render-test-tool
-                REQUIRED_BY slang-test
-                FOLDER test/tools
-            )
-        endif()
-    endif()
-    slang_add_target(
-        tools/slang-unit-test
-        MODULE
-        EXCLUDE_FROM_ALL
-        EXTRA_COMPILE_DEFINITIONS_PRIVATE SLANG_SHARED_LIBRARY_TOOL
-        USE_FEWER_WARNINGS
-        LINK_WITH_PRIVATE core compiler-core unit-test slang Threads::Threads
-        OUTPUT_NAME slang-unit-test-tool
-        FOLDER test/tools
-    )
-    slang_add_target(
-        tools/slang-reflection-test
-        MODULE
-        EXCLUDE_FROM_ALL
-        EXTRA_COMPILE_DEFINITIONS_PRIVATE SLANG_SHARED_LIBRARY_TOOL
-        USE_FEWER_WARNINGS
-        LINK_WITH_PRIVATE core slang Threads::Threads
-        OUTPUT_NAME slang-reflection-test-tool
-        FOLDER test/tools
-    )
+#     # These are libraries loaded at runtime from the test executable:
+#     if(SLANG_ENABLE_GFX)
+#         slang_add_target(
+#             tools/gfx-unit-test
+#             MODULE
+#             EXCLUDE_FROM_ALL
+#             EXTRA_COMPILE_DEFINITIONS_PRIVATE SLANG_SHARED_LIBRARY_TOOL
+#             USE_FEWER_WARNINGS
+#             LINK_WITH_PRIVATE core slang unit-test gfx gfx-util platform
+#             OUTPUT_NAME gfx-unit-test-tool
+#             REQUIRED_BY slang-test
+#             FOLDER test/tools
+#         )
+#         if(SLANG_ENABLE_SLANG_RHI)
+#             slang_add_target(
+#                 tools/render-test
+#                 MODULE
+#                 EXCLUDE_FROM_ALL
+#                 EXTRA_COMPILE_DEFINITIONS_PRIVATE SLANG_SHARED_LIBRARY_TOOL
+#                 USE_FEWER_WARNINGS
+#                 LINK_WITH_PRIVATE
+#                     core
+#                     compiler-core
+#                     slang
+#                     slang-rhi
+#                     platform
+#                     $<$<BOOL:${SLANG_ENABLE_CUDA}>:CUDA::cuda_driver>
+#                 EXTRA_COMPILE_DEFINITIONS_PRIVATE
+#                     $<$<BOOL:${SLANG_ENABLE_CUDA}>:RENDER_TEST_CUDA>
+#                     $<$<BOOL:${SLANG_ENABLE_OPTIX}>:RENDER_TEST_OPTIX>
+#                 OUTPUT_NAME render-test-tool
+#                 REQUIRED_BY slang-test
+#                 FOLDER test/tools
+#             )
+#         endif()
+#     endif()
+#     slang_add_target(
+#         tools/slang-unit-test
+#         MODULE
+#         EXCLUDE_FROM_ALL
+#         EXTRA_COMPILE_DEFINITIONS_PRIVATE SLANG_SHARED_LIBRARY_TOOL
+#         USE_FEWER_WARNINGS
+#         LINK_WITH_PRIVATE core compiler-core unit-test slang Threads::Threads
+#         OUTPUT_NAME slang-unit-test-tool
+#         FOLDER test/tools
+#     )
+#     slang_add_target(
+#         tools/slang-reflection-test
+#         MODULE
+#         EXCLUDE_FROM_ALL
+#         EXTRA_COMPILE_DEFINITIONS_PRIVATE SLANG_SHARED_LIBRARY_TOOL
+#         USE_FEWER_WARNINGS
+#         LINK_WITH_PRIVATE core slang Threads::Threads
+#         OUTPUT_NAME slang-reflection-test-tool
+#         FOLDER test/tools
+#     )
 
-    slang_add_target(
-        tools/slang-profile
-        EXECUTABLE
-        EXCLUDE_FROM_ALL
-        LINK_WITH_PRIVATE core slang
-        FOLDER test
-    )
-endif()
+#     slang_add_target(
+#         tools/slang-profile
+#         EXECUTABLE
+#         EXCLUDE_FROM_ALL
+#         LINK_WITH_PRIVATE core slang
+#         FOLDER test
+#     )
+# endif()
 
-if (SLANG_ENABLE_EXAMPLES AND SLANG_ENABLE_GFX)
-    #
-    # Examples
-    #
-    slang_add_target(
-        examples/example-base
-        STATIC
-        LINK_WITH_PRIVATE
-            core
-            slang
-            gfx
-            platform
-            $<$<BOOL:${SLANG_ENABLE_CUDA}>:CUDA::cuda_driver>
-        FOLDER examples
-    )
+# if (SLANG_ENABLE_EXAMPLES AND SLANG_ENABLE_GFX)
+#     #
+#     # Examples
+#     #
+#     slang_add_target(
+#         examples/example-base
+#         STATIC
+#         LINK_WITH_PRIVATE
+#             core
+#             slang
+#             gfx
+#             platform
+#             $<$<BOOL:${SLANG_ENABLE_CUDA}>:CUDA::cuda_driver>
+#         FOLDER examples
+#     )
 
-    add_custom_target(
-        all-examples
-        COMMENT "meta target which depends on all examples"
-    )
-    set_target_properties(all-examples PROPERTIES FOLDER examples)
-    function(example dir)
-        set(debug_dir ${CMAKE_BINARY_DIR}/${dir})
+#     add_custom_target(
+#         all-examples
+#         COMMENT "meta target which depends on all examples"
+#     )
+#     set_target_properties(all-examples PROPERTIES FOLDER examples)
+#     function(example dir)
+#         set(debug_dir ${CMAKE_BINARY_DIR}/${dir})
 
-        slang_add_target(
-            ${dir}
-            EXECUTABLE
-            USE_FEWER_WARNINGS
-            LINK_WITH_PRIVATE
-                core
-                example-base
-                slang
-                gfx
-                gfx-util
-                platform
-                $<$<BOOL:${SLANG_ENABLE_CUDA}>:CUDA::cuda_driver>
-            EXTRA_COMPILE_DEFINITIONS_PRIVATE
-                $<$<BOOL:${SLANG_ENABLE_XLIB}>:SLANG_ENABLE_XLIB>
-            REQUIRED_BY all-examples
-            FOLDER examples
-            DEBUG_DIR ${debug_dir}
-            ${ARGN}
-        )
+#         slang_add_target(
+#             ${dir}
+#             EXECUTABLE
+#             USE_FEWER_WARNINGS
+#             LINK_WITH_PRIVATE
+#                 core
+#                 example-base
+#                 slang
+#                 gfx
+#                 gfx-util
+#                 platform
+#                 $<$<BOOL:${SLANG_ENABLE_CUDA}>:CUDA::cuda_driver>
+#             EXTRA_COMPILE_DEFINITIONS_PRIVATE
+#                 $<$<BOOL:${SLANG_ENABLE_XLIB}>:SLANG_ENABLE_XLIB>
+#             REQUIRED_BY all-examples
+#             FOLDER examples
+#             DEBUG_DIR ${debug_dir}
+#             ${ARGN}
+#         )
 
-        get_filename_component(example_target ${dir} NAME)
-        file(GLOB asset_files
-            "${CMAKE_SOURCE_DIR}/${dir}/*.slang"
-            "${CMAKE_SOURCE_DIR}/${dir}/*.jpg"
-            "${CMAKE_SOURCE_DIR}/${dir}/*.obj"
-            "${CMAKE_SOURCE_DIR}/${dir}/*.mtl"
-            "${CMAKE_SOURCE_DIR}/${dir}/*.h"
-        )
+#         get_filename_component(example_target ${dir} NAME)
+#         file(GLOB asset_files
+#             "${CMAKE_SOURCE_DIR}/${dir}/*.slang"
+#             "${CMAKE_SOURCE_DIR}/${dir}/*.jpg"
+#             "${CMAKE_SOURCE_DIR}/${dir}/*.obj"
+#             "${CMAKE_SOURCE_DIR}/${dir}/*.mtl"
+#             "${CMAKE_SOURCE_DIR}/${dir}/*.h"
+#         )
 
-        list(LENGTH asset_files asset_files_length)
-            if (asset_files_length GREATER 0)
-            set(copy_assets_target "${example_target}-copy-assets")
+#         list(LENGTH asset_files asset_files_length)
+#             if (asset_files_length GREATER 0)
+#             set(copy_assets_target "${example_target}-copy-assets")
 
-            add_custom_target(
-                ${copy_assets_target}
-                COMMAND ${CMAKE_COMMAND} -E make_directory ${debug_dir}
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${asset_files} ${debug_dir}
-                COMMENT "Copy example assets to ${debug_dir}"
-            )
+#             add_custom_target(
+#                 ${copy_assets_target}
+#                 COMMAND ${CMAKE_COMMAND} -E make_directory ${debug_dir}
+#                 COMMAND ${CMAKE_COMMAND} -E copy_if_different ${asset_files} ${debug_dir}
+#                 COMMENT "Copy example assets to ${debug_dir}"
+#             )
 
-            set_target_properties(${copy_assets_target} PROPERTIES FOLDER "examples/copy_assets")
+#             set_target_properties(${copy_assets_target} PROPERTIES FOLDER "examples/copy_assets")
 
-            add_dependencies(${example_target} ${copy_assets_target})
+#             add_dependencies(${example_target} ${copy_assets_target})
 
-            # Copy DirectX shader binaries so signing doesn't fail when running from Visual Studio
-            if (MSVC)
-                if (SLANG_ENABLE_PREBUILT_BINARIES)
-                    add_dependencies(${example_target} copy-prebuilt-binaries)
-                endif()
-            endif()
-        endif()
-    endfunction()
+#             # Copy DirectX shader binaries so signing doesn't fail when running from Visual Studio
+#             if (MSVC)
+#                 if (SLANG_ENABLE_PREBUILT_BINARIES)
+#                     add_dependencies(${example_target} copy-prebuilt-binaries)
+#                 endif()
+#             endif()
+#         endif()
+#     endfunction()
 
-    example(examples/autodiff-texture WIN32_EXECUTABLE)
-    example(examples/cpu-com-example )
-    example(examples/cpu-hello-world )
-    example(examples/gpu-printing )
-    example(examples/hello-world LINK_WITH_PRIVATE Vulkan-Headers)
-    example(examples/model-viewer WIN32_EXECUTABLE)
-    example(examples/platform-test WIN32_EXECUTABLE)
-    example(examples/ray-tracing WIN32_EXECUTABLE)
-    example(examples/ray-tracing-pipeline WIN32_EXECUTABLE)
-    example(examples/shader-object )
-    example(examples/shader-toy WIN32_EXECUTABLE)
-    example(examples/triangle WIN32_EXECUTABLE)
-    if(SLANG_ENABLE_AFTERMATH)
-        example(examples/nv-aftermath-example WIN32_EXECUTABLE)
-    endif()
-endif()
+#     example(examples/autodiff-texture WIN32_EXECUTABLE)
+#     example(examples/cpu-com-example )
+#     example(examples/cpu-hello-world )
+#     example(examples/gpu-printing )
+#     example(examples/hello-world LINK_WITH_PRIVATE Vulkan-Headers)
+#     example(examples/model-viewer WIN32_EXECUTABLE)
+#     example(examples/platform-test WIN32_EXECUTABLE)
+#     example(examples/ray-tracing WIN32_EXECUTABLE)
+#     example(examples/ray-tracing-pipeline WIN32_EXECUTABLE)
+#     example(examples/shader-object )
+#     example(examples/shader-toy WIN32_EXECUTABLE)
+#     example(examples/triangle WIN32_EXECUTABLE)
+#     if(SLANG_ENABLE_AFTERMATH)
+#         example(examples/nv-aftermath-example WIN32_EXECUTABLE)
+#     endif()
+# endif()
 
 #
 # slang-replay tool for replaying the record files
 #
-if (SLANG_ENABLE_REPLAYER)
-    slang_add_target(
-        tools/slang-replay
-        EXECUTABLE
-        EXTRA_SOURCE_DIRS source/slang-record-replay/replay source/slang-record-replay/util
-        LINK_WITH_PRIVATE core compiler-core slang
-        INCLUDE_DIRECTORIES_PUBLIC source/slang-record-replay
-        FOLDER test
-    )
-endif()
+# if (SLANG_ENABLE_REPLAYER)
+#     slang_add_target(
+#         tools/slang-replay
+#         EXECUTABLE
+#         EXTRA_SOURCE_DIRS source/slang-record-replay/replay source/slang-record-replay/util
+#         LINK_WITH_PRIVATE core compiler-core slang
+#         INCLUDE_DIRECTORIES_PUBLIC source/slang-record-replay
+#         FOLDER test
+#     )
+# endif()
 
 #
 # Testing
 #
-if(SLANG_ENABLE_TESTS)
-    include(CTest)
-    add_test(
-        NAME slang-test
-        COMMAND
-            slang-test -bindir ${slang_SOURCE_DIR}/build/$<CONFIG>/${runtime_subdir}
-            -expected-failure-list ${slang_SOURCE_DIR}/tests/expected-failure.txt
-            -expected-failure-list
-            ${slang_SOURCE_DIR}/tests/expected-failure-github.txt
-        WORKING_DIRECTORY ${slang_SOURCE_DIR}
-    )
-endif()
+# if(SLANG_ENABLE_TESTS)
+#     include(CTest)
+#     add_test(
+#         NAME slang-test
+#         COMMAND
+#             slang-test -bindir ${slang_SOURCE_DIR}/build/$<CONFIG>/${runtime_subdir}
+#             -expected-failure-list ${slang_SOURCE_DIR}/tests/expected-failure.txt
+#             -expected-failure-list
+#             ${slang_SOURCE_DIR}/tests/expected-failure-github.txt
+#         WORKING_DIRECTORY ${slang_SOURCE_DIR}
+#     )
+# endif()
 
 #
 # Packaging
